@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+</head>
+<body>
+<style type="text/css">
+    body {
+        background-color: #fff0ca;
+    }
+    div.middle {
+        position: absolute;
+        width: 300px;
+        height: 200px;
+        z-index: 15;
+        top: 50%;
+        left: 50%;
+        margin: -100px 0 0 -150px;
+    }
+</style>
+
+<div style="float:right">
+    <form action="/adminlogin">
+        <input type="password" name="password">password</input><br>
+        <input type="submit" value="Log In as Admin"/>
+    </form>
+</div>
+<div class="middle">
+    <form action="/login">
+        <input type="text" name="mail">mail</input><br>
+        <input type="password" name="password">password</input><br>
+        <input type="submit" value="Log In"/>
+    </form>
+</div>
+</body>
+</html>

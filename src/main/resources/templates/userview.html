@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>User view</title>
+</head>
+<body>
+
+<style type="text/css">
+    body {
+        background-color: #fff0ca;
+    }
+    div {
+        height: 225px;
+        width: 50%;
+    }
+    div.inline { float:left; }
+    div.inlinesmall {
+        height: 50px;
+        width: 50%;
+        float:left;
+    }
+    .clearBoth { clear:both; }
+</style>
+
+<div class="inlinesmall">
+    <form action="/login">
+        <div class="inlinesmall">
+            <input type="submit" value="Log Out"/>
+        </div>
+    </form>
+    <div class="inlinesmall">
+        <p th:text="'Your referral code: ' + ${userObject.referralCode}">ReferralCode</p>
+    </div>
+    <br class="clearBoth" />
+</div>
+<br class="clearBoth" />
+
+<div class="inline">
+    <div class="inline">
+        <form action="/userview">
+            <label for="productID">Product ID: </label>
+            <input type="number" name="productID" /><br>
+            <textarea name="review" rows="10" cols="30"/></textarea><br>
+            <input type="submit" value="Review"/>
+        </form>
+    </div>
+    <div class="inline">
+        <form action="/userview">
+            <label for="productID">Product ID: </label>
+            <input type="number" name="productID" id="productID" /><br>
+            <select name="rate" size="5">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Rate"/>
+        </form>
+    </div>
+</div>
+<br class="clearBoth" />
+
+<div class="inline">
+    <div class="inline">
+        <form action="/buy">
+            <label for="price">Product price: </label>
+            <input type="number" name="price" id="price"/><br>
+            <label for="usedPoints">Redeem points: </label>
+            <input type="number" name="usedPoints" id="usedPoints"/>
+            <tr th:text="'Out of ' + ${userObject.loyaltyPoints}">points</tr>
+            <br>
+            <input type="submit" value="Review"/>
+        </form>
+    </div>
+
+    <div class="inline">
+        Account details<br>
+        <table>
+            <th:block th:object="${userObject}">
+                <tr th:each="detail: *{details}">
+                    <td th:text="${detail}">Detail</td>
+                </tr>
+            </th:block>
+        </table>
+    </div>
+
+    <div class="inline">
+        View offers<br>
+        <table>
+            <tr>
+                <td>Valid to</td>
+                <td>Offer</td>
+            </tr>
+            <tr th:each="offers: ${userObject.offers}">
+                <td th:text="${offers.endDate}">End Date</td>
+                <td th:text="${offers.offer}">Offer</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="inline">
+        View actions history<br>
+        <table>
+            <tr>
+                <td>Date</td>
+                <td>Type</td>
+                <td>Details</td>
+            </tr>
+            <tr th:each="actions: ${userObject.actions}">
+                <td th:text="${actions.date}">Date</td>
+                <td th:text="${actions.type}">Type</td>
+                <td th:text="${actions.details}">Details</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
