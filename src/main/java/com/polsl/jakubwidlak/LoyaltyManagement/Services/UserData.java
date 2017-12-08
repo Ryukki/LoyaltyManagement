@@ -1,6 +1,6 @@
-package com.polsl.jakubwidlak.LoyaltyManagement.businesslogic;
+package com.polsl.jakubwidlak.LoyaltyManagement.Services;
 
-import com.polsl.jakubwidlak.LoyaltyManagement.domain.*;
+import com.polsl.jakubwidlak.LoyaltyManagement.Entities.*;
 
 import java.util.List;
 
@@ -13,16 +13,20 @@ public class UserData {
     private List<Review> reviewList;
     private List<Referral> referralList;
     private List<Offer> offerList;
+    private List<Transaction> transactionList;
+    private String userExists;
 
     public UserData() {
     }
 
-    public UserData(User user, List<Rating> ratingList, List<Review> reviewList, List<Referral> referralList, List<Offer> offerList) {
+    public UserData(User user, List<Rating> ratingList, List<Review> reviewList, List<Referral> referralList, List<Offer> offerList, List<Transaction> transactionList) {
         this.user = user;
         this.ratingList = ratingList;
         this.reviewList = reviewList;
         this.referralList = referralList;
         this.offerList = offerList;
+        this.transactionList = transactionList;
+        this.userExists = "yes";
     }
 
     public User getUser() {
@@ -63,5 +67,21 @@ public class UserData {
 
     public void setOfferList(List<Offer> offerList) {
         this.offerList = offerList;
+    }
+
+    public String getUserExists() {
+        return userExists;
+    }
+
+    public void setUserExists(String userExists) {
+        this.userExists = userExists;
+    }
+
+    public List<Transaction> getTransactionList() {
+        return transactionList;
+    }
+
+    public void setTransactionList(List<Transaction> transactionList) {
+        this.transactionList = transactionList;
     }
 }

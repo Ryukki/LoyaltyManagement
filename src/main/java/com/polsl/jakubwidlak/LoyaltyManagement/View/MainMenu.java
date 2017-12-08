@@ -18,6 +18,7 @@ public class MainMenu {
     private JTextField pointsReviewingTextField;
     private JTextField currency2pointsTextField;
     private JFormattedTextField points2currencyTextField;
+    private JTable levelsList;
 
     public MainMenu() {
 

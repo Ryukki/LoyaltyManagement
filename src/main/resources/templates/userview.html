@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8"/>
     <title>User view</title>
 </head>
 <body>
@@ -9,110 +9,151 @@
 <style type="text/css">
     body {
         background-color: #fff0ca;
+        width: 960px;
+        margin-left: 450px;
     }
     div {
-        height: 225px;
-        width: 50%;
+        height: 250px;
+        margin-right: 25px;
     }
-    div.inline { float:left; }
+    div.left { float:left; }
     div.inlinesmall {
         height: 50px;
-        width: 50%;
         float:left;
     }
     .clearBoth { clear:both; }
 </style>
 
-<div class="inlinesmall">
+<div style="float:right">
     <form action="/login">
         <div class="inlinesmall">
             <input type="submit" value="Log Out"/>
         </div>
     </form>
-    <div class="inlinesmall">
-        <p th:text="'Your referral code: ' + ${userObject.referralCode}">ReferralCode</p>
-    </div>
     <br class="clearBoth" />
 </div>
 <br class="clearBoth" />
 
-<div class="inline">
-    <div class="inline">
+<div class="left">
+    <div class="left">
         <form action="/userview">
-            <label for="productID">Product ID: </label>
-            <input type="number" name="productID" /><br>
-            <textarea name="review" rows="10" cols="30"/></textarea><br>
+            <label for="productID1">Product ID: </label>
+            <input type="number" name="productID" id="ProductID1" min=0 /><br>
+            <textarea name="review" rows="10" cols="33"></textarea><br>
             <input type="submit" value="Review"/>
         </form>
     </div>
-    <div class="inline">
+    <div class="left">
+        <form action="/userview">
+            <label for="productID2">Product ID: </label>
+            <input type="number" name="productID" id="productID2" min=0 /><br>
+            <div class="left">
+                <select name="rate" size="3">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <input type="submit" value="Rate"/>
+
+        </form>
+    </div>
+    <!--
+        <div class="inline">
         <form action="/userview">
             <label for="productID">Product ID: </label>
             <input type="number" name="productID" id="productID" /><br>
-            <select name="rate" size="5">
+            <select name="rate" size="3">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select>
-            <br><br>
             <input type="submit" value="Rate"/>
         </form>
     </div>
+    -->
 </div>
 <br class="clearBoth" />
 
-<div class="inline">
-    <div class="inline">
+<div class="left">
+    <div class="left">
         <form action="/buy">
             <label for="price">Product price: </label>
-            <input type="number" name="price" id="price"/><br>
-            <label for="usedPoints">Redeem points: </label>
-            <input type="number" name="usedPoints" id="usedPoints"/>
-            <tr th:text="'Out of ' + ${userObject.loyaltyPoints}">points</tr>
+            <input type="number" name="price" id="price" min=0/><br>
+            <label for="usedPoints">Redeem points:</label>
+            <input type="number" name="usedPoints" id="usedPoints" min=0/><br>
+            <span th:text="'Out of ' + ${userObject.user.UserCurrentPoints} + ' points.'">points</span>
             <br>
-            <input type="submit" value="Review"/>
+            <input type="submit" value="Buy"/>
         </form>
+
+        Account details:<br>
+        <span th:text="${userObject.user.UserName} + ' ' + ${userObject.user.UserSurname} + ' ' + ${userObject.user.UserMail}">Name Surname mail</span><br>
+        <span th:text="'Current level: ' + ${userObject.user.UserLevel}">Current level</span><br>
+        <span th:text="'Current amount of points: ' + ${userObject.user.UserCurrentPoints}">Current Points</span><br>
+        <span th:text="'Total amount of points: ' + ${userObject.user.UserTotalPoints}">Total Points</span><br>
+        <span th:text="'Your referral code: ' + ${userObject.user.UserReferralCode}">ReferralCode</span><br>
     </div>
 
-    <div class="inline">
-        Account details<br>
+    <div class="left">
+        Available Offers:<br>
         <table>
-            <th:block th:object="${userObject}">
-                <tr th:each="detail: *{details}">
-                    <td th:text="${detail}">Detail</td>
-                </tr>
-            </th:block>
-        </table>
-    </div>
-
-    <div class="inline">
-        View offers<br>
-        <table>
-            <tr>
-                <td>Valid to</td>
-                <td>Offer</td>
-            </tr>
-            <tr th:each="offers: ${userObject.offers}">
-                <td th:text="${offers.endDate}">End Date</td>
-                <td th:text="${offers.offer}">Offer</td>
+            <tr th:each="offers: ${userObject.offerList}">
+                <td th:text="${offers.OfferName}">Offer Name</td>
+                <td th:text="${offers.OfferEndDate}">End Date</td>
+                <td th:text="${offers.OfferText}">Offer</td>
             </tr>
         </table>
     </div>
 
-    <div class="inline">
-        View actions history<br>
+    <br class="clearBoth" />
+    <div class="left">
+        Review history:<br>
+        <table>
+            <tr th:each="review: ${userObject.reviewList}">
+                <td th:text="${review.reviewDate}">Date</td>
+            </tr>
+        </table>
+    </div>
+    <div class="left">
+        Rating history:<br>
+        <table>
+            <tr th:each="rating: ${userObject.ratingList}">
+                <td th:text="${rating.ratingDate}">Date</td>
+            </tr>
+        </table>
+    </div>
+    <div class="left">
+        Referral history:<br>
         <table>
             <tr>
                 <td>Date</td>
-                <td>Type</td>
-                <td>Details</td>
+                <td>Referred User</td>
             </tr>
-            <tr th:each="actions: ${userObject.actions}">
-                <td th:text="${actions.date}">Date</td>
-                <td th:text="${actions.type}">Type</td>
-                <td th:text="${actions.details}">Details</td>
+            <tr th:each="referral: ${userObject.referralList}">
+                <td th:text="${referral.referralDate}">Date</td>
+                <td th:text="${referral.referralNewUserMail}">Date</td>
+            </tr>
+        </table>
+    </div>
+    <div class="left">
+        Transaction history:<br>
+        <table>
+            <tr>
+                <td>Price</td>
+                <td>Points Earned</td>
+                <td>Points Spent</td>
+                <td>Date</td>
+            </tr>
+            <tr th:each="transaction: ${userObject.transactionList}">
+                <td th:text="${transaction.transactionPrice}">Price</td>
+                <td th:text="${transaction.transactionPointsEarned}">Points Earned</td>
+                <td th:text="${transaction.transactionPointsSpent}">Points Spent</td>
+                <td th:text="${transaction.transactionDate}">Date</td>
             </tr>
         </table>
     </div>

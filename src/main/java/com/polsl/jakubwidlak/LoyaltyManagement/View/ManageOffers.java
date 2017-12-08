@@ -22,6 +22,8 @@ public class ManageOffers {
     private JButton addRefferalRuleButton;
     private JButton addLevelUpRuleButton;
     private JTable actionRulesTable;
+    private JTextField textField1;
+    private JButton saveExpirationButton;
 
     public ManageOffers() {
         //offerTable - przyciski w tabeli: usuń, edytuj - na samej górze: Add
@@ -63,6 +65,12 @@ public class ManageOffers {
             }
         });
         addLevelUpRuleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        saveExpirationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 

@@ -1,6 +1,6 @@
 package com.polsl.jakubwidlak.LoyaltyManagement.Repositories;
 
-import com.polsl.jakubwidlak.LoyaltyManagement.domain.ActionEnum;
+import com.polsl.jakubwidlak.LoyaltyManagement.Entities.ActionEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

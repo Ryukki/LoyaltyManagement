@@ -1,7 +1,7 @@
-package com.polsl.jakubwidlak.LoyaltyManagement.businesslogic;
+package com.polsl.jakubwidlak.LoyaltyManagement.Services;
 
 import com.polsl.jakubwidlak.LoyaltyManagement.Repositories.*;
-import com.polsl.jakubwidlak.LoyaltyManagement.domain.*;
+import com.polsl.jakubwidlak.LoyaltyManagement.Entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
