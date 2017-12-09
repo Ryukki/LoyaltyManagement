@@ -18,11 +18,14 @@
         left: 50%;
         margin: -100px 0 0 -150px;
     }
+    form{
+        float: left;
+    }
 </style>
 
 <div style="float:right">
     <form action="/adminlogin">
-        <input type="password" name="password">password</input><br>
+        <input type="password" name="password"/><br>
         <input type="submit" value="Log In as Admin"/>
     </form>
 </div>
@@ -31,6 +34,9 @@
         <input type="text" name="user_mail">mail</input><br>
         <input type="password" name="password">password</input><br>
         <input type="submit" value="Log In"/>
+    </form>
+    <form action="/registerPage">
+        <input type="submit" value="Register">
     </form>
 </div>
 </body>

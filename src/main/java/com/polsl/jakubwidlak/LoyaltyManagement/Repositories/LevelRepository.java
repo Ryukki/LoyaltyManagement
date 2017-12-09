@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LevelRepository extends JpaRepository<LoyaltyLevel, Integer> {
+    LoyaltyLevel findFirstByLevelLowerBoundGreaterThanEqual(Integer totalPoints);
+    LoyaltyLevel findByLevelId(Long id);
 }

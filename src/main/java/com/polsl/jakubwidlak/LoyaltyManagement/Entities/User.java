@@ -1,6 +1,7 @@
 package com.polsl.jakubwidlak.LoyaltyManagement.Entities;
 
 import javax.persistence.*;
+import java.security.SecureRandom;
 
 @Entity
 @Table(name="USER")
@@ -20,7 +21,7 @@ public class User {
     private String userMail;
 
     @Column(name="U_TOTALPOINTS")
-    private Long userTotalPoints;
+    private Integer userTotalPoints;
 
     @Column(name="U_CURRENTPOINTS")
     private Integer userCurrentPoints;
@@ -41,15 +42,30 @@ public class User {
     private List<Review> reviewList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Rating> ratingList = new ArrayList<>();
+    private List<Rating> ratingList = new ArrayList<>();*/
 
-    public User(String name, String surname, String mail) {
-        this.u_name = name;
-        this.u_surname = surname;
-        this.u_mail = mail;
-        this.u_currentPoints = 0;
-        this.u_totalPoints = Long.valueOf(0);
-    }*/
+    public User() {
+    }
+
+    public User(String userName, String userSurname, String userMail, String userPassword) {
+        this.userName = userName;
+        this.userSurname = userSurname;
+        this.userMail = userMail;
+        this.userPassword = userPassword;
+        this.userCurrentPoints=0;
+        this.userTotalPoints= 0;
+        this.userReferralCode = randomString(10);
+    }
+
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static SecureRandom rnd = new SecureRandom();
+
+    String randomString( int len ){
+        StringBuilder sb = new StringBuilder( len );
+        for( int i = 0; i < len; i++ )
+            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+        return sb.toString();
+    }
 
     public Long getUserId() {
         return userId;
@@ -83,11 +99,11 @@ public class User {
         this.userMail = userMail;
     }
 
-    public Long getUserTotalPoints() {
+    public Integer getUserTotalPoints() {
         return userTotalPoints;
     }
 
-    public void setUserTotalPoints(Long userTotalPoints) {
+    public void setUserTotalPoints(Integer userTotalPoints) {
         this.userTotalPoints = userTotalPoints;
     }
 
@@ -127,7 +143,7 @@ public class User {
 
     public void changePoints(Integer points) {
         if (points>0)
-            this.userTotalPoints= Long.valueOf(+points);
+            this.userTotalPoints+=points;
         this.userCurrentPoints+=points;
     }
 }

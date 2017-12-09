@@ -17,9 +17,11 @@ public class UserDataService {
     private OfferUserConnectionRepository offerUserConnectionRepository;
     private OfferRepository offerRepository;
     private TransactionRepository transactionRepository;
+    private SystemSettingsRepository systemSettingsRepository;
+    private LevelRepository levelRepository;
 
     @Autowired
-    public UserDataService(UserRepository userRepository, RatingRepository ratingRepository, ReviewRepository reviewRepository, ReferralRepository referralRepository, OfferUserConnectionRepository offerUserConnectionRepository, OfferRepository offerRepository, TransactionRepository transactionRepository) {
+    public UserDataService(UserRepository userRepository, RatingRepository ratingRepository, ReviewRepository reviewRepository, ReferralRepository referralRepository, OfferUserConnectionRepository offerUserConnectionRepository, OfferRepository offerRepository, TransactionRepository transactionRepository, SystemSettingsRepository systemSettingsRepository, LevelRepository levelRepository) {
         this.userRepository = userRepository;
         this.ratingRepository = ratingRepository;
         this.reviewRepository = reviewRepository;
@@ -27,6 +29,8 @@ public class UserDataService {
         this.offerUserConnectionRepository = offerUserConnectionRepository;
         this.offerRepository = offerRepository;
         this.transactionRepository = transactionRepository;
+        this.systemSettingsRepository = systemSettingsRepository;
+        this.levelRepository = levelRepository;
     }
 
     public UserData getUserDataWithId(Long user_id){
@@ -44,8 +48,8 @@ public class UserDataService {
         return userData;
     }
 
-    public Long checkUserAndGetId(String user_mail, String password){
-        User user = this.userRepository.findByUserMail(user_mail);
+    public Long checkUserAndGetId(String userMail, String password){
+        User user = this.userRepository.findByUserMail(userMail);
         if(user!=null){
             if(user.checkPassword(password)){
                 return user.getUserId();
@@ -54,5 +58,42 @@ public class UserDataService {
             }
         }
         return new Long(0);
+    }
+
+    public boolean checkIfUserAlreadyExist(String userMail){
+        User user = this.userRepository.findByUserMail(userMail);
+        if(user!=null){
+            return true;
+        }
+        return false;
+    }
+
+    public Long addNewUser(String userMail, String password, String userName, String userSurname, String referralCode){
+        User user = new User(userName, userSurname, userMail, password);
+        List<SystemSetting> systemSettingList = systemSettingsRepository.findAll();
+        SystemSetting systemSetting = systemSettingsRepository.findBySystemSettingName("CreatingAccountPoints");
+        Integer pointsForCreatingAccount = systemSetting.getSystemSettingValue();
+        user.setUserCurrentPoints(pointsForCreatingAccount);
+        user.setUserTotalPoints(pointsForCreatingAccount);
+        user = adjustUserLevel(user);
+        user = userRepository.save(user);
+        User referringUser = userRepository.findByUserReferralCode(referralCode);
+        if(referringUser!=null){
+            referringUser.changePoints(systemSettingsRepository.getOne(4).getSystemSettingValue());
+            userRepository.save(referringUser);
+        }
+
+        return user.getUserId();
+    }
+
+    private User adjustUserLevel(User user){
+        Integer userTotalPoints = user.getUserTotalPoints();
+        LoyaltyLevel loyaltyLevel = levelRepository.findFirstByLevelLowerBoundGreaterThanEqual(userTotalPoints);
+        Long levelId = loyaltyLevel.getLevelId();
+        if(levelId>1){
+            loyaltyLevel = levelRepository.findByLevelId(levelId-1);
+        }
+        user.setUserLevel(loyaltyLevel.getLevelName());
+        return user;
     }
 }

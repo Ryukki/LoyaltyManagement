@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <title>Login Page</title>
@@ -22,16 +22,24 @@
 
 <div style="float:right">
     <form action="/adminlogin">
-        <input type="password" name="password">password</input><br>
+        <input type="password" name="password"/><br>
         <input type="submit" value="Log In as Admin"/>
     </form>
 </div>
+
 <div class="middle">
     <form action="/userview">
         <input type="text" name="user_mail">mail</input><br>
         <input type="password" name="password">password</input><br>
         <input type="submit" value="Log In"/>
     </form>
+    <div th:if="${errorInfo != null}">
+        <div th:if="${errorInfo == 'Wrong password'}">
+            <p>Wrong password!</p>
+        </div>
+        <div th:if="${errorInfo == 'No user with this mail'}">
+            <p>No user with this email!</p>
+        </div>
+    </div>
 </div>
 </body>
-</html>
