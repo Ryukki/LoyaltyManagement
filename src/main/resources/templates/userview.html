@@ -13,19 +13,18 @@
         margin-left: 450px;
     }
     div {
-        height: 250px;
+        margin-bottom: 50px;
         margin-right: 25px;
     }
     div.left { float:left; }
     div.inlinesmall {
-        height: 50px;
         float:left;
     }
     .clearBoth { clear:both; }
 </style>
 
 <div style="float:right">
-    <form action="/login">
+    <form action="/loginPage">
         <div class="inlinesmall">
             <input type="submit" value="Log Out"/>
         </div>
@@ -34,7 +33,7 @@
 <br>
 <div class="left">
     <div class="left">
-        <form action="/userview">
+        <form action="/review">
             <label for="productID1">Product ID: </label>
             <input type="number" name="productID" id="ProductID1" min=0 /><br>
             <textarea name="review" rows="10" cols="33"></textarea><br>
@@ -42,7 +41,7 @@
         </form>
     </div>
     <div class="left">
-        <form action="/userview">
+        <form action="/rate">
             <label for="productID2">Product ID: </label>
             <input type="number" name="productID" id="productID2" min=0 /><br>
             <div class="left">
@@ -82,13 +81,15 @@
         <form action="/buy">
             <label for="price">Product price: </label>
             <input type="number" name="price" id="price" min=0/><br>
-            <label for="usedPoints">Redeem points:</label>
-            <input type="number" name="usedPoints" id="usedPoints" min=0/><br>
-            <span th:text="'Out of ' + ${userObject.user.UserCurrentPoints} + ' points.'">points</span>
+            <label for="pointsSpent">Redeem points:</label>
+            <input type="number" name="pointsSpent" id="pointsSpent" min=0/><br>
+            <span th:text="'Out of ' + ${userObject.user.UserCurrentPoints} + ' points.'">Available points</span>
             <br>
             <input type="submit" value="Buy"/>
         </form>
+    </div>
 
+    <div class="left">
         Account details:<br>
         <span th:text="${userObject.user.UserName} + ' ' + ${userObject.user.UserSurname} + ' ' + ${userObject.user.UserMail}">Name Surname mail</span><br>
         <span th:text="'Current level: ' + ${userObject.user.UserLevel}">Current level</span><br>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -95,5 +96,44 @@ public class UserDataService {
         }
         user.setUserLevel(loyaltyLevel.getLevelName());
         return user;
+    }
+
+    public void addReview(Long userId){
+        Review review = new Review();
+        review.setReviewUserId(userId);
+        Date utilDate = new Date();
+        review.setReviewDate(new java.sql.Date(utilDate.getTime()));
+        reviewRepository.save(review);
+    }
+
+    public void addRating(Long userId){
+        Rating rating = new Rating();
+        rating.setRatingUserId(userId);
+        Date utilDate = new Date();
+        rating.setRatingDate(new java.sql.Date(utilDate.getTime()));
+        ratingRepository.save(rating);
+    }
+
+    public void addTransaction(Long userId, int pointsSpent, double price){
+        Transaction transaction = new Transaction();
+        User user = userRepository.findByUserId(userId);
+        transaction.setTransactionUserId(userId);
+        Date utilDate = new Date();
+        transaction.setTransactionDate(new java.sql.Date(utilDate.getTime()));
+        transaction.setTransactionPointsSpent(pointsSpent);
+        transaction.setTransactionPrice(price);
+        int currency2Points = systemSettingsRepository.findBySystemSettingName("Currency2Points").getSystemSettingValue();
+        Integer points2Currency = systemSettingsRepository.findBySystemSettingName("Points2Currency").getSystemSettingValue();
+        if(user.getUserCurrentPoints()<pointsSpent){
+            pointsSpent=user.getUserCurrentPoints();
+        }
+        double moneyForPoints = (double)pointsSpent*(double)currency2Points/10;
+        price -= moneyForPoints;
+        int pointsEarned = (int)price*points2Currency/10;
+        transaction.setTransactionPointsEarned(pointsEarned);
+        transactionRepository.save(transaction);
+        user.changePoints(pointsEarned-pointsSpent);
+        user = adjustUserLevel(user);
+        userRepository.save(user);
     }
 }
