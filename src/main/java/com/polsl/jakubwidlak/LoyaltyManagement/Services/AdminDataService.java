@@ -4,10 +4,13 @@ import com.polsl.jakubwidlak.LoyaltyManagement.Repositories.*;
 import com.polsl.jakubwidlak.LoyaltyManagement.Entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.*;
 import java.util.List;
 
 @Service
+@Transactional
 public class AdminDataService {
 
     private UserRepository userRepository;
@@ -37,14 +40,119 @@ public class AdminDataService {
         this.actionEnumRepository = actionEnumRepository;
     }
 
+    public List<Offer> getOffers(){
+        return offerRepository.findAll();
+    }
+
+    public void sendOffer(String offerName, LoyaltyLevel loyaltyLevel){
+        Offer offer = offerRepository.findByOfferName(offerName);
+        List<User> userList= userRepository.findAllByUserLevel(loyaltyLevel.getLevelName());
+        for (User user:userList) {
+            OfferUserConnection offerUserConnection = new OfferUserConnection();
+            offerUserConnection.setConnectionOfferId(offer.getOfferId());
+            offerUserConnection.setConnectionUserId(user.getUserId());
+            offerUserConnectionRepository.save(offerUserConnection);
+        }
+    }
 
     public Integer getSystemSettingValue(String systemSettingName){
         SystemSetting systemSetting = systemSettingsRepository.findBySystemSettingName(systemSettingName);
         return systemSetting.getSystemSettingValue();
     }
 
+    public void setSystemSetting(String name, Integer value){
+
+    }
+
     public List<LoyaltyLevel> getLoyaltyLevels(){
-        List<LoyaltyLevel> levelList = levelRepository.findAll();
+        List<LoyaltyLevel> levelList = levelRepository.findAllByOrderByLevelLowerBoundAsc();
         return levelList;
+    }
+
+    public void removeLevel(Long id){
+        levelRepository.deleteByLevelId(id);
+    }
+
+    public void addLevel(String levelName, Integer lowerBound, Integer upperBound){
+        removeInteriorLevels(lowerBound, upperBound);
+        LoyaltyLevel lowerLevel = levelRepository.findByLevelUpperBoundBetween(lowerBound, upperBound);
+        LoyaltyLevel higherLevel = levelRepository.findByLevelLowerBoundBetween(lowerBound, upperBound);
+        LoyaltyLevel newLevel = new LoyaltyLevel();
+        newLevel.setLevelName(levelName);
+        newLevel.setLevelLowerBound(lowerBound);
+        newLevel.setLevelUpperBound(upperBound);
+        if(lowerLevel!=null){
+            lowerLevel.setLevelUpperBound(lowerBound-1);
+            levelRepository.save(lowerLevel);
+        }
+        if(higherLevel!=null){
+            higherLevel.setLevelLowerBound(upperBound+1);
+            levelRepository.save(higherLevel);
+        }
+
+        levelRepository.save(newLevel);
+    }
+
+    private void removeInteriorLevels(Integer lowerBound, Integer upperBound){
+        List<LoyaltyLevel> levelsToRemove = levelRepository.findAllByLevelLowerBoundGreaterThanAndAndLevelUpperBoundLessThan(lowerBound, upperBound);
+        for (LoyaltyLevel level:levelsToRemove
+             ) {
+            levelRepository.deleteByLevelId(level.getLevelId());
+        }
+    }
+
+    private LoyaltyLevel findLowerLevel(Integer lowerBound){
+        List<LoyaltyLevel> lowerBoundList = levelRepository.findAllByLevelLowerBoundLessThanOrderByLevelLowerBoundDesc(lowerBound);
+        return lowerBoundList.get(0);
+    }
+
+    private LoyaltyLevel findUpperLevel(Integer upperBound){
+        List<LoyaltyLevel> higherBoundList = levelRepository.findAllByLevelUpperBoundGreaterThanOrderByLevelUpperBoundAsc(upperBound);
+        return higherBoundList.get(0);
+    }
+
+    public void editLevel(LoyaltyLevel loyaltyLevel, String levelName, Integer lowerBound, Integer upperBound){
+        Integer previousLowerBound = loyaltyLevel.getLevelLowerBound();
+        Integer previousUpperBound = loyaltyLevel.getLevelUpperBound();
+        LoyaltyLevel lowerLevel = findLowerLevel(previousLowerBound);
+        LoyaltyLevel higherLevel = findUpperLevel(previousUpperBound);
+
+        levelRepository.deleteByLevelId(loyaltyLevel.getLevelId());
+        addLevel(levelName, lowerBound, upperBound);
+
+        /*Integer median = previousLowerBound+previousUpperBound/2;
+        if(lowerLevel!=null){
+            LoyaltyLevel upperLevel = findUpperLevel(lowerLevel.getLevelUpperBound());
+            Integer upperLevelLowerBound = 0;
+            if (upperLevel!=null){
+                upperLevelLowerBound = upperLevel.getLevelLowerBound();
+            }
+            if(upperLevelLowerBound==0 || median<upperLevelLowerBound){
+                lowerLevel.setLevelUpperBound(median);
+            }else{
+                lowerLevel.setLevelUpperBound(upperLevelLowerBound);
+            }
+
+            levelRepository.save(lowerLevel);
+        }
+        if(higherLevel!=null){
+            LoyaltyLevel lowLevel = findLowerLevel(higherLevel.getLevelLowerBound());
+            Integer lowLevelUpperBound = 0;
+            if (lowLevel!=null){
+                lowLevelUpperBound = lowLevel.getLevelLowerBound();
+            }
+            higherLevel.setLevelLowerBound(median+1);
+            levelRepository.save(higherLevel);
+        }*/
+    }
+
+    public JFrame createBonusFrame(String name){
+        JFrame bonusJFrame = new JFrame(name);
+        bonusJFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        bonusJFrame.pack();
+        bonusJFrame.revalidate();
+        bonusJFrame.setResizable(false);
+        bonusJFrame.setVisible(true);
+        return bonusJFrame;
     }
 }

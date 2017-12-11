@@ -3,14 +3,16 @@ package com.polsl.jakubwidlak.LoyaltyManagement.View;
 import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by Ryukki on 10.12.2017.
  */
-@Service
+@Controller
 public class AdminPanel {
     private JFrame jFrame;
 
@@ -22,16 +24,20 @@ public class AdminPanel {
     }*/
 
     public void setupAdminGui(){
-
-        JFrame jFrame = new JFrame("Admin Panel");
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPanel(new MainMenu().getMainPanel());
+        jFrame = new JFrame("Admin Panel");
+        jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        MainMenu mainMenu = new MainMenu(adminDataService);
+        JPanel jPanel = mainMenu.getMainPanel();
+        setPanel(jPanel);
         jFrame.setResizable(false);
         jFrame.setVisible(true);
     }
 
-    public void setPanel(JPanel jPanel){
-        jFrame.getContentPane().removeAll();
+    private void setPanel(JPanel jPanel){
+        Container container = jFrame.getContentPane();
+        if(container!=null){
+            jFrame.getContentPane().removeAll();
+        }
         jFrame.setContentPane(jPanel);
         jFrame.pack();
         jFrame.revalidate();

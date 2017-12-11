@@ -42,7 +42,7 @@ public class UserDataService {
         List<OfferUserConnection> offerUserConnectionList = this.offerUserConnectionRepository.findAllByConnectionUserId(user_id);
         List<Offer> offerList = new ArrayList<>();
         offerUserConnectionList.forEach(offerUserConnection -> {
-            offerList.add(offerRepository.findByOfferId(offerUserConnection.getOfferUserConnectionId()));
+            offerList.add(offerRepository.findByOfferId(offerUserConnection.getConnectionOfferId()));
         });
         List<Transaction> transactionList = this.transactionRepository.findAllByTransactionUserId(user_id);
         UserData userData = new UserData(user, ratingList, reviewList, referralList, offerList, transactionList);

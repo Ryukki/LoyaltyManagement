@@ -1,5 +1,7 @@
 package com.polsl.jakubwidlak.LoyaltyManagement.View;
 
+import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,8 +26,12 @@ public class ManageOffers {
     private JTable actionRulesTable;
     private JTextField textField1;
     private JButton saveExpirationButton;
+    private JPanel mainPanel;
 
-    public ManageOffers() {
+    private AdminDataService adminDataService;
+
+    public ManageOffers(AdminDataService adminDataService) {
+        this.adminDataService = adminDataService;
         //offerTable - przyciski w tabeli: usuń, edytuj - na samej górze: Add
         //actionRulesTable - istniejące zasady plus przyciski do usuwania
         mainPageButton.addActionListener(new ActionListener() {
@@ -76,5 +82,9 @@ public class ManageOffers {
 
             }
         });
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 }

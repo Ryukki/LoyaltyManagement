@@ -1,5 +1,7 @@
 package com.polsl.jakubwidlak.LoyaltyManagement.View;
 
+import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,9 +17,12 @@ public class ViewUsers {
     private JTable usersTable;
     private JButton sendOfferButton;
     private JComboBox offersComboBox;
+    private JPanel mainPanel;
+    private AdminDataService adminDataService;
     //https://stackoverflow.com/questions/28823670/how-to-sort-jtable-in-shortest-way
 
-    public ViewUsers() {
+    public ViewUsers(AdminDataService adminDataService) {
+        this.adminDataService = adminDataService;
         sendOfferButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -42,5 +47,9 @@ public class ViewUsers {
 
             }
         });
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 }

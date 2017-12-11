@@ -35,7 +35,7 @@ public class UserViewController {
 
     @RequestMapping(value = "/adminlogin", method = RequestMethod.GET)
     public String loginDmin(@RequestParam String password){
-        if(password.equals("nimda")){
+        if(password.equals("")){
             //JFrame jFrame = new JFrame("Admin Panel");
 
             //AdminPanel adminPanel = new AdminPanel(jFrame);
