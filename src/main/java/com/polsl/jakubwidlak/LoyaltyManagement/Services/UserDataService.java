@@ -42,7 +42,12 @@ public class UserDataService {
         List<OfferUserConnection> offerUserConnectionList = this.offerUserConnectionRepository.findAllByConnectionUserId(user_id);
         List<Offer> offerList = new ArrayList<>();
         offerUserConnectionList.forEach(offerUserConnection -> {
-            offerList.add(offerRepository.findByOfferId(offerUserConnection.getConnectionOfferId()));
+            Offer offer = offerRepository.findByOfferId(offerUserConnection.getConnectionOfferId());
+            Date utilDate = new Date();
+
+            if(offer.getOfferEndDate().compareTo(new java.sql.Date(utilDate.getTime()))>=0){
+                offerList.add(offer);
+            }
         });
         List<Transaction> transactionList = this.transactionRepository.findAllByTransactionUserId(user_id);
         UserData userData = new UserData(user, ratingList, reviewList, referralList, offerList, transactionList);
@@ -89,12 +94,17 @@ public class UserDataService {
 
     private User adjustUserLevel(User user){
         Integer userTotalPoints = user.getUserTotalPoints();
-        LoyaltyLevel loyaltyLevel = levelRepository.findFirstByLevelLowerBoundGreaterThanEqual(userTotalPoints);
-        Long levelId = loyaltyLevel.getLevelId();
-        if(levelId>1){
-            loyaltyLevel = levelRepository.findByLevelId(levelId-1);
+        LoyaltyLevel loyaltyLevel = levelRepository.findByLevelLowerBoundLessThanEqualAndLevelUpperBoundGreaterThanEqual(userTotalPoints, userTotalPoints);
+        //Long levelId = loyaltyLevel.getLevelId();
+        //if(levelId>1){
+       //    loyaltyLevel = levelRepository.findByLevelId(levelId-1);
+        //}
+        if(loyaltyLevel!=null){
+            user.setUserLevel(loyaltyLevel.getLevelName());
+        }else{
+            user.setUserLevel("");
         }
-        user.setUserLevel(loyaltyLevel.getLevelName());
+
         return user;
     }
 

@@ -19,10 +19,6 @@ public class AdminPanel {
     @Autowired
     private AdminDataService adminDataService;
 
-    /*public AdminPanel(JFrame frame) {
-        jFrame = frame;
-    }*/
-
     public void setupAdminGui(){
         jFrame = new JFrame("Admin Panel");
         jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

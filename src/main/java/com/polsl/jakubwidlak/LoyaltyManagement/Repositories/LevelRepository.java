@@ -14,7 +14,8 @@ public interface LevelRepository extends JpaRepository<LoyaltyLevel, Integer> {
     LoyaltyLevel findByLevelLowerBoundBetween(Integer lowerBound, Integer upperBound);
     LoyaltyLevel findByLevelUpperBoundBetween(Integer lowerBound, Integer upperBound);
     List<LoyaltyLevel> findAllByOrderByLevelLowerBoundAsc();
-    List<LoyaltyLevel> findAllByLevelLowerBoundLessThanOrderByLevelLowerBoundDesc(Integer lowerBound);
-    List<LoyaltyLevel> findAllByLevelUpperBoundGreaterThanOrderByLevelUpperBoundAsc(Integer upperBound);
+    //List<LoyaltyLevel> findAllByLevelLowerBoundLessThanOrderByLevelLowerBoundDesc(Integer lowerBound);
+    //List<LoyaltyLevel> findAllByLevelUpperBoundGreaterThanOrderByLevelUpperBoundAsc(Integer upperBound);
     List<LoyaltyLevel> findAllByLevelLowerBoundGreaterThanAndAndLevelUpperBoundLessThan(Integer lowerBound, Integer upperBound);
+    LoyaltyLevel findByLevelLowerBoundLessThanEqualAndLevelUpperBoundGreaterThanEqual(Integer value, Integer val2);
 }

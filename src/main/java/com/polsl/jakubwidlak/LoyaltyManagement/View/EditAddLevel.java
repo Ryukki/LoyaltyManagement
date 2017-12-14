@@ -17,13 +17,9 @@ public class EditAddLevel {
     private JTextField editedLevelUpperBoundTextField;
     private JButton saveButton;
     private JPanel mainPanel;
-    //private AdminDataService adminDataService;
-    //private LoyaltyLevel loyaltyLevel;
 
 
     public EditAddLevel(AdminDataService adminDataService, LoyaltyLevel loyaltyLevel, MainMenu mainMenu) {
-        //this.adminDataService = adminDataService;
-        //this.loyaltyLevel = loyaltyLevel;
         actionLabel.setText("Edit Level");
         editedLevelNameTextField.setText(loyaltyLevel.getLevelName());
         editedLevelLowerBoundTextField.setText(loyaltyLevel.getLevelLowerBound().toString());

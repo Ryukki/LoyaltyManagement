@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SendingRuleRepository extends JpaRepository<OfferSendingRule, Integer> {
+    void deleteBySendingRuleId(Long id);
 }

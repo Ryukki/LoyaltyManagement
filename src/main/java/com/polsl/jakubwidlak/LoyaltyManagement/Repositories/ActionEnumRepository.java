@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ActionEnumRepository extends JpaRepository<ActionEnum, Integer> {
+    ActionEnum findByActionEnumId(Long id);
 }

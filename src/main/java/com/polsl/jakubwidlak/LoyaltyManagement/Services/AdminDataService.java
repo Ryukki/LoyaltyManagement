@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,10 +44,24 @@ public class AdminDataService {
     public List<Offer> getOffers(){
         return offerRepository.findAll();
     }
+    public List<User> getUsers(){return userRepository.findAll();}
 
-    public void sendOffer(String offerName, LoyaltyLevel loyaltyLevel){
+    public void sendOfferToLevel(String offerName, LoyaltyLevel loyaltyLevel){
         Offer offer = offerRepository.findByOfferName(offerName);
         List<User> userList= userRepository.findAllByUserLevel(loyaltyLevel.getLevelName());
+        sendOfferToUsers(offerName, userList);
+    }
+
+    public void removeOffer(Long id){
+        offerRepository.deleteByOfferId(id);
+    }
+
+    public Offer getOfferWithId(Long id){
+        return offerRepository.findByOfferId(id);
+    }
+
+    public void sendOfferToUsers(String offerName, List<User> userList){
+        Offer offer = offerRepository.findByOfferName(offerName);
         for (User user:userList) {
             OfferUserConnection offerUserConnection = new OfferUserConnection();
             offerUserConnection.setConnectionOfferId(offer.getOfferId());
@@ -55,18 +70,32 @@ public class AdminDataService {
         }
     }
 
+    public ActionEnum getActionEnumWithId(Long id){
+        return actionEnumRepository.findByActionEnumId(id);
+    }
+
+    public void removeSendingRule(Long id){
+        sendingRuleRepository.deleteBySendingRuleId(id);
+    }
+
     public Integer getSystemSettingValue(String systemSettingName){
         SystemSetting systemSetting = systemSettingsRepository.findBySystemSettingName(systemSettingName);
         return systemSetting.getSystemSettingValue();
     }
 
     public void setSystemSetting(String name, Integer value){
-
+        SystemSetting systemSetting = systemSettingsRepository.findBySystemSettingName(name);
+        systemSetting.setSystemSettingValue(value);
+        systemSettingsRepository.save(systemSetting);
     }
 
     public List<LoyaltyLevel> getLoyaltyLevels(){
         List<LoyaltyLevel> levelList = levelRepository.findAllByOrderByLevelLowerBoundAsc();
         return levelList;
+    }
+
+    public LoyaltyLevel getLevelWithId(Long id){
+        return levelRepository.findByLevelId(id);
     }
 
     public void removeLevel(Long id){
@@ -91,6 +120,7 @@ public class AdminDataService {
         }
 
         levelRepository.save(newLevel);
+        adjustUserLevels();
     }
 
     private void removeInteriorLevels(Integer lowerBound, Integer upperBound){
@@ -101,7 +131,7 @@ public class AdminDataService {
         }
     }
 
-    private LoyaltyLevel findLowerLevel(Integer lowerBound){
+    /*private LoyaltyLevel findLowerLevel(Integer lowerBound){
         List<LoyaltyLevel> lowerBoundList = levelRepository.findAllByLevelLowerBoundLessThanOrderByLevelLowerBoundDesc(lowerBound);
         return lowerBoundList.get(0);
     }
@@ -109,13 +139,38 @@ public class AdminDataService {
     private LoyaltyLevel findUpperLevel(Integer upperBound){
         List<LoyaltyLevel> higherBoundList = levelRepository.findAllByLevelUpperBoundGreaterThanOrderByLevelUpperBoundAsc(upperBound);
         return higherBoundList.get(0);
+    }*/
+
+    public List<User> findUsersWithLevel(String level){
+        return userRepository.findAllByUserLevel(level);
+    }
+
+    public List<User> findUsersWithMails(List<String> mails){return userRepository.findByUserMailIn(mails);}
+
+    public List<User> findUsersWithNameOrSurnameOrMailLike(String name){
+        List<User> userList = userRepository.findAllByUserNameContainingIgnoreCase(name);
+        userList.addAll(userRepository.findAllByUserSurnameContainingIgnoreCase(name));
+        userList.addAll(userRepository.findAllByUserMailContainingIgnoreCase(name));
+        return userList.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private void adjustUserLevels(){
+        List<User> userList = userRepository.findAll();
+        for(User user: userList){
+            Integer userTotalPoints = user.getUserTotalPoints();
+            LoyaltyLevel loyaltyLevel = levelRepository.findByLevelLowerBoundLessThanEqualAndLevelUpperBoundGreaterThanEqual(userTotalPoints, userTotalPoints);
+            user.setUserLevel(loyaltyLevel.getLevelName());
+            userRepository.save(user);
+        }
     }
 
     public void editLevel(LoyaltyLevel loyaltyLevel, String levelName, Integer lowerBound, Integer upperBound){
-        Integer previousLowerBound = loyaltyLevel.getLevelLowerBound();
-        Integer previousUpperBound = loyaltyLevel.getLevelUpperBound();
-        LoyaltyLevel lowerLevel = findLowerLevel(previousLowerBound);
-        LoyaltyLevel higherLevel = findUpperLevel(previousUpperBound);
+        //Integer previousLowerBound = loyaltyLevel.getLevelLowerBound();
+        //Integer previousUpperBound = loyaltyLevel.getLevelUpperBound();
+        //LoyaltyLevel lowerLevel = findLowerLevel(previousLowerBound);
+        //LoyaltyLevel higherLevel = findUpperLevel(previousUpperBound);
 
         levelRepository.deleteByLevelId(loyaltyLevel.getLevelId());
         addLevel(levelName, lowerBound, upperBound);
@@ -144,6 +199,10 @@ public class AdminDataService {
             higherLevel.setLevelLowerBound(median+1);
             levelRepository.save(higherLevel);
         }*/
+    }
+
+    public List<OfferSendingRule> getOfferSendingRules(){
+        return sendingRuleRepository.findAll();
     }
 
     public JFrame createBonusFrame(String name){

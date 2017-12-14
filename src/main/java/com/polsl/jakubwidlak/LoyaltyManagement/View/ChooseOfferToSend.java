@@ -29,7 +29,7 @@ public class ChooseOfferToSend {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedOffer = offerComboBox.getSelectedItem().toString();
-                adminDataService.sendOffer(selectedOffer, loyaltyLevel);
+                adminDataService.sendOfferToLevel(selectedOffer, loyaltyLevel);
                 JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
                 mainFrame.dispose();
             }

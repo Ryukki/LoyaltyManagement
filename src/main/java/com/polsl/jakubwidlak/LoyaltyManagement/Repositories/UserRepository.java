@@ -12,4 +12,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findByUserMail(String user_mail);
     User findByUserReferralCode(String referralCode);
     List<User> findAllByUserLevel(String level);
+    List<User> findAllByUserNameContainingIgnoreCase(String name);
+    List<User> findAllByUserSurnameContainingIgnoreCase(String name);
+    List<User> findAllByUserMailContainingIgnoreCase(String name);
+    List<User> findByUserMailIn(List<String> mails);
 }

@@ -68,7 +68,7 @@ public class MainMenu {
             levelData[i][5] = "Send Offer";
         }
         DefaultTableModel tableModel = new DefaultTableModel(levelData, columnNames);
-        levelsList.setModel(tableModel);// = new JTable(tableModel);
+        levelsList.setModel(tableModel);
 
         Action delete = new AbstractAction()
         {
@@ -184,7 +184,7 @@ public class MainMenu {
     private void setPanel(JFrame jFrame, JPanel jPanel){
         jFrame.getContentPane().removeAll();
         jFrame.setContentPane(jPanel);
-        jFrame.pack();
+        //jFrame.pack();
         jFrame.revalidate();
     }
 }

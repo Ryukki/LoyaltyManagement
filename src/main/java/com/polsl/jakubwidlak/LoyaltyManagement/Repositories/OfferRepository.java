@@ -10,4 +10,5 @@ import java.util.List;
 public interface OfferRepository  extends JpaRepository<Offer, Integer> {
     Offer findByOfferId(Long id);
     Offer findByOfferName(String name);
+    void deleteByOfferId(Long id);
 }

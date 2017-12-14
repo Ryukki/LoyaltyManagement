@@ -102,7 +102,9 @@ public class UserViewController {
 
     @RequestMapping(value = "/buy", method = RequestMethod.GET)
     public String addTransaction(@RequestParam Double price,@RequestParam Integer pointsSpent, Model model){
-        //co jeśli to nie będą doubel i integery
+        //co jeśli to nie będą double i integery
+        if(pointsSpent==null)
+            pointsSpent = 0;
         userDataService.addTransaction(this.currentUserId, pointsSpent, price);
         model = putUserDataInModel(model);
         return "userview";
