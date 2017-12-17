@@ -184,7 +184,6 @@ public class MainMenu {
     private void setPanel(JFrame jFrame, JPanel jPanel){
         jFrame.getContentPane().removeAll();
         jFrame.setContentPane(jPanel);
-        //jFrame.pack();
         jFrame.revalidate();
     }
 }

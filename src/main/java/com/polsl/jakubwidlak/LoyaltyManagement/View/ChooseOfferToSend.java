@@ -18,13 +18,9 @@ public class ChooseOfferToSend {
     private JComboBox offerComboBox;
     private JPanel mainPanel;
     private List<Offer> offerList;
-    private AdminDataService adminDataService;
-    private LoyaltyLevel loyaltyLevel;
 
     public ChooseOfferToSend(List<Offer> offers, AdminDataService adminDataService, LoyaltyLevel loyaltyLevel) {
         offerList = offers;
-        this.adminDataService = adminDataService;
-        this.loyaltyLevel = loyaltyLevel;
         sendOfferButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -53,6 +53,8 @@ public class AdminDataService {
     }
 
     public void removeOffer(Long id){
+        offerUserConnectionRepository.deleteByConnectionOfferId(id);
+        sendingRuleRepository.deleteBySendingRuleOfferId(id);
         offerRepository.deleteByOfferId(id);
     }
 
@@ -76,6 +78,11 @@ public class AdminDataService {
 
     public void removeSendingRule(Long id){
         sendingRuleRepository.deleteBySendingRuleId(id);
+    }
+
+    public void addSendingRule(Long offerId, Long actionEnumId, Long loyaltylevelId, Integer points){
+        OfferSendingRule offerSendingRule = new OfferSendingRule(offerId, actionEnumId, loyaltylevelId, points);
+        sendingRuleRepository.save(offerSendingRule);
     }
 
     public Integer getSystemSettingValue(String systemSettingName){

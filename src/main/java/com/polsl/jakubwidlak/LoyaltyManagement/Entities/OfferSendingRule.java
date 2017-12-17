@@ -22,6 +22,16 @@ public class OfferSendingRule {
     @Column(name="SR_CURRENTPOINTS")
     private Integer sendingRuleCurrentPoints;
 
+    public OfferSendingRule() {
+    }
+
+    public OfferSendingRule(Long sendingRuleOfferId, Long sendingRuleActionEnumId, Long sendingRuleLoyaltyLevelId, Integer sendingRuleCurrentPoints) {
+        this.sendingRuleOfferId = sendingRuleOfferId;
+        this.sendingRuleActionEnumId = sendingRuleActionEnumId;
+        this.sendingRuleLoyaltyLevelId = sendingRuleLoyaltyLevelId;
+        this.sendingRuleCurrentPoints = sendingRuleCurrentPoints;
+    }
+
     public Long getSendingRuleId() {
         return sendingRuleId;
     }

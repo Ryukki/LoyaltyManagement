@@ -8,6 +8,7 @@ import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -33,9 +34,11 @@ public class ManageOffers {
     private JTextField offerExpirationTextField;
     private JButton saveExpirationButton;
     private JPanel mainPanel;
+    private JButton collectedPointsRuleButton;
     private ManageOffers manageOffers;
     private List<Offer> offerList;
     private List<OfferSendingRule> offerSendingRuleList;
+    private List<LoyaltyLevel> levelList;
 
     private AdminDataService adminDataService;
 
@@ -45,15 +48,14 @@ public class ManageOffers {
         offerList = adminDataService.getOffers();
         //offerTable - przyciski w tabeli: usuń, edytuj - na samej górze: Add
         //actionRulesTable - istniejące zasady plus przyciski do usuwania
-
         setupButtons();
         setupOfferTable();
+        setupRulesTable();
         setupInputFields();
     }
 
     private void setupOfferTable(){
         String[] columnNames = {"Name", "Start Date", "End Date", "", ""};
-
         int numberOfOffers = offerList.size();
         Object[][] levelData = new Object[numberOfOffers][5];
         for (int i =0; i<numberOfOffers; i++) {
@@ -74,7 +76,9 @@ public class ManageOffers {
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Offer offer = offerList.get(modelRow);
                 adminDataService.removeOffer(offer.getOfferId());
+                refreshOffers();
                 setupOfferTable();
+                setupRulesTable();
             }
         };
         ButtonColumn buttonColumnDelete = new ButtonColumn(offerTable, delete, 3);
@@ -145,7 +149,7 @@ public class ManageOffers {
         achievedLevelOfferComboBox.setModel(new DefaultComboBoxModel(offersName));
         collectedPointsOfferComboBox.setModel(new DefaultComboBoxModel(offersName));
 
-        List<LoyaltyLevel> levelList = adminDataService.getLoyaltyLevels();
+        levelList = adminDataService.getLoyaltyLevels();
         String[] levelsName = new String[levelList.size()];
         for (int i = 0; i< levelList.size();i++) {
             levelsName[i] = levelList.get(i).getLevelName();
@@ -182,25 +186,35 @@ public class ManageOffers {
         addAccountCreationRuleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Offer offer = offerList.get(accountCreationOfferComboBox.getSelectedIndex());
+                adminDataService.addSendingRule(offer.getOfferId(), Long.valueOf(1), Long.valueOf(0), 0);
+                setupRulesTable();
             }
         });
         addRefferalRuleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Offer offer = offerList.get(refferalOfferComboBox.getSelectedIndex());
+                adminDataService.addSendingRule(offer.getOfferId(),Long.valueOf(2), Long.valueOf(0), 0);
+                setupRulesTable();
             }
         });
         addLevelUpRuleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Offer offer = offerList.get(achievedLevelOfferComboBox.getSelectedIndex());
+                LoyaltyLevel loyaltyLevel = levelList.get(achievedLevelComboBox.getSelectedIndex());
+                adminDataService.addSendingRule(offer.getOfferId(), Long.valueOf(3), loyaltyLevel.getLevelId(), 0);
+                setupRulesTable();
             }
         });
-        addLevelUpRuleButton.addActionListener(new ActionListener() {
+        collectedPointsRuleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Offer offer = offerList.get(collectedPointsOfferComboBox.getSelectedIndex());
+                Integer points = Integer.parseInt(collectedPointsTextField.getText());
+                adminDataService.addSendingRule(offer.getOfferId(), Long.valueOf(4), Long.valueOf(0), points);
+                setupRulesTable();
             }
         });
         saveExpirationButton.addActionListener(new ActionListener() {
@@ -211,6 +225,7 @@ public class ManageOffers {
                     if(offerExpiration>=0){
                         adminDataService.setSystemSetting("OfferTimeStored", offerExpiration);
                     }else{
+                        offerExpirationTextField.setText(adminDataService.getSystemSettingValue("OfferTimeStored").toString());
                         JOptionPane.showMessageDialog(new JFrame(), "Value greater of equal zero required.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     }
 

@@ -28,17 +28,25 @@ public class EditAddLevel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String levelName = editedLevelNameTextField.getText();
-                try{
-                    Integer lowerBound = Integer.parseInt(editedLevelLowerBoundTextField.getText());
-                    Integer upperBound = Integer.parseInt(editedLevelUpperBoundTextField.getText());
-                    if(checkIfHigherThanZero(lowerBound, upperBound)){
-                        adminDataService.editLevel(loyaltyLevel, levelName, lowerBound, upperBound);
-                        mainMenu.setupLevelList();
-                        JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
-                        mainFrame.dispose();
+                if(levelName!=""){
+                    try{
+                        Integer lowerBound = Integer.parseInt(editedLevelLowerBoundTextField.getText());
+                        Integer upperBound = Integer.parseInt(editedLevelUpperBoundTextField.getText());
+                        if(checkIfHigherThanZero(lowerBound, upperBound)){
+                            if(upperBound>lowerBound){
+                                adminDataService.editLevel(loyaltyLevel, levelName, lowerBound, upperBound);
+                                mainMenu.setupLevelList();
+                                JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
+                                mainFrame.dispose();
+                            }else {
+                                JOptionPane.showMessageDialog(new JFrame(), "Upper Bound neeeds to be greater than Lower Bound.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }catch (NumberFormatException ex){
+                        JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     }
-                }catch (NumberFormatException ex){
-                    JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                }else {
+                    JOptionPane.showMessageDialog(new JFrame(), "Level Name is required.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -51,17 +59,25 @@ public class EditAddLevel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String levelName = editedLevelNameTextField.getText();
-                try{
-                    Integer lowerBound = Integer.parseInt(editedLevelLowerBoundTextField.getText());
-                    Integer upperBound = Integer.parseInt(editedLevelUpperBoundTextField.getText());
-                    if(checkIfHigherThanZero(lowerBound, upperBound)){
-                        adminDataService.addLevel(levelName, lowerBound, upperBound);
-                        mainMenu.setupLevelList();
-                        JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
-                        mainFrame.dispose();
+                if(levelName!=""){
+                    try{
+                        Integer lowerBound = Integer.parseInt(editedLevelLowerBoundTextField.getText());
+                        Integer upperBound = Integer.parseInt(editedLevelUpperBoundTextField.getText());
+                        if(checkIfHigherThanZero(lowerBound, upperBound)){
+                            if(upperBound>lowerBound){
+                                adminDataService.addLevel(levelName, lowerBound, upperBound);
+                                mainMenu.setupLevelList();
+                                JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
+                                mainFrame.dispose();
+                            }else {
+                                JOptionPane.showMessageDialog(new JFrame(), "Upper Bound neeeds to be greater than Lower Bound.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }catch (NumberFormatException ex){
+                        JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     }
-                }catch (NumberFormatException ex){
-                    JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                }else {
+                    JOptionPane.showMessageDialog(new JFrame(), "Level Name is required.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface OfferUserConnectionRepository extends JpaRepository<OfferUserConnection, Integer> {
-    public List<OfferUserConnection> findAllByConnectionUserId(Long id);
+    List<OfferUserConnection> findAllByConnectionUserId(Long id);
+    void deleteByConnectionOfferId(Long id);
 }
