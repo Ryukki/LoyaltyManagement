@@ -36,10 +36,6 @@ public class OfferSendingRule {
         return sendingRuleId;
     }
 
-    public void setSendingRuleId(Long sendingRuleId) {
-        this.sendingRuleId = sendingRuleId;
-    }
-
     public Long getSendingRuleOfferId() {
         return sendingRuleOfferId;
     }

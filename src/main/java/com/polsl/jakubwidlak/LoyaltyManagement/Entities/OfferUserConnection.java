@@ -2,9 +2,6 @@ package com.polsl.jakubwidlak.LoyaltyManagement.Entities;
 
 import javax.persistence.*;
 
-/**
- * Created by Ryukki on 04.12.2017.
- */
 @Entity
 @Table(name="OFFERUSERCONNECTION")
 public class OfferUserConnection {

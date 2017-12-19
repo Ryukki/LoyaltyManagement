@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
-    public List<Transaction> findAllByTransactionUserId(Long id);
+    List<Transaction> findAllByTransactionUserId(Long id);
 }

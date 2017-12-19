@@ -17,19 +17,11 @@ public class ActionEnum {
         return actionEnumId;
     }
 
-    public void setActionEnumId(Long actionEnumId) {
-        this.actionEnumId = actionEnumId;
-    }
-
     public String getActionEnumName() {
         return actionEnumName;
     }
 
-    public void setActionEnumName(String actionEnumName) {
-        this.actionEnumName = actionEnumName;
-    }
-
-/*ACCOUNTCREATION,
+    /*ACCOUNTCREATION,
     REFFERAL,
     LEVELACHIEVED,
     POINTSCOLLECTED*/

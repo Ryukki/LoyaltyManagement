@@ -57,10 +57,10 @@ public class User {
         this.userReferralCode = randomString(10);
     }
 
-    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    static SecureRandom rnd = new SecureRandom();
+    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static SecureRandom rnd = new SecureRandom();
 
-    String randomString( int len ){
+    private String randomString( int len ){
         StringBuilder sb = new StringBuilder( len );
         for( int i = 0; i < len; i++ )
             sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
@@ -136,9 +136,7 @@ public class User {
     }
 
     public boolean checkPassword(String checkedPassword){
-        if(checkedPassword.equals(this.userPassword))
-            return true;
-        return false;
+        return checkedPassword.equals(this.userPassword);
     }
 
     public void changePoints(Integer points) {

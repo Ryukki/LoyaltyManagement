@@ -7,32 +7,24 @@ import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ryukki on 10.12.2017.
- */
+
 public class ChooseOfferToSend {
     private JButton sendOfferButton;
     private JComboBox offerComboBox;
     private JPanel mainPanel;
-    private List<Offer> offerList;
 
     public ChooseOfferToSend(List<Offer> offers, AdminDataService adminDataService, LoyaltyLevel loyaltyLevel) {
-        offerList = offers;
-        sendOfferButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String selectedOffer = offerComboBox.getSelectedItem().toString();
-                adminDataService.sendOfferToLevel(selectedOffer, loyaltyLevel);
-                JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
-                mainFrame.dispose();
-            }
+        sendOfferButton.addActionListener(e -> {
+            String selectedOffer = offerComboBox.getSelectedItem().toString();
+            adminDataService.sendOfferToLevel(selectedOffer, loyaltyLevel);
+            JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
+            mainFrame.dispose();
         });
-        String[] offersName = new String[offerList.size()];
-        for (int i = 0; i< offerList.size();i++) {
-            offersName[i] = offerList.get(i).getOfferName();
+        String[] offersName = new String[offers.size()];
+        for (int i = 0; i< offers.size();i++) {
+            offersName[i] = offers.get(i).getOfferName();
         }
         offerComboBox.setModel(new DefaultComboBoxModel(offersName));
     }

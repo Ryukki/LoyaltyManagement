@@ -13,7 +13,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findByUserReferralCode(String referralCode);
     List<User> findAllByUserLevel(String level);
     List<User> findAllByUserNameContainingIgnoreCase(String name);
-    List<User> findAllByUserSurnameContainingIgnoreCase(String name);
-    List<User> findAllByUserMailContainingIgnoreCase(String name);
+    List<User> findAllByUserSurnameContainingIgnoreCase(String surname);
+    List<User> findAllByUserMailContainingIgnoreCase(String mail);
+    List<User> findAllByUserLevelIgnoreCase(String level);
     List<User> findByUserMailIn(List<String> mails);
 }

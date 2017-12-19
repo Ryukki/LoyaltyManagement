@@ -28,10 +28,6 @@ public class Offer {
         return offerId;
     }
 
-    public void setOfferId(Long offerId) {
-        this.offerId = offerId;
-    }
-
     public Date getOfferStartDate() {
         return offerStartDate;
     }

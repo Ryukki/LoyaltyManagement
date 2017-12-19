@@ -6,16 +6,11 @@ import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ryukki on 05.12.2017.
- */
 public class ViewUsers {
     private JButton mainPageButton;
     private JButton manageOffersButton;
@@ -111,54 +106,39 @@ public class ViewUsers {
     }
 
     private void setupButtons(){
-        selectAllCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(selectAllCheckBox.isSelected()){
-                    setCheckboxes(true);
-                }else{
-                    setCheckboxes(false);
-                }
+        selectAllCheckBox.addActionListener(e -> {
+            if(selectAllCheckBox.isSelected()){
+                setCheckboxes(true);
+            }else{
+                setCheckboxes(false);
             }
         });
 
-        sendOfferButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String selectedOffer = offersComboBox.getSelectedItem().toString();
-                List<String> mails = getUsers();
-                List<User> userList = adminDataService.findUsersWithMails(mails);
-                adminDataService.sendOfferToUsers(selectedOffer, userList);
+        sendOfferButton.addActionListener(e -> {
+            String selectedOffer = offersComboBox.getSelectedItem().toString();
+            List<String> mails = getUsers();
+            List<User> userList = adminDataService.findUsersWithMails(mails);
+            adminDataService.sendOfferToUsers(selectedOffer, userList);
 
+        });
+        searchButton.addActionListener(e -> {
+            String searchTerm = userOrLevelSearchTextField.getText();
+            if(searchTerm!=""){
+                List<User> userList;
+                userList = adminDataService.findUsersWithNameOrSurnameOrMailLike(searchTerm);
+                userList.addAll(adminDataService.findUsersWithLevel(searchTerm));
+                putUsers(userList);
             }
         });
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchTerm = userOrLevelSearchTextField.getText();
-                if(searchTerm!=""){
-                    List<User> userList;
-                    userList = adminDataService.findUsersWithNameOrSurnameOrMailLike(searchTerm);
-                    userList.addAll(adminDataService.findUsersWithLevel(searchTerm));
-                    putUsers(userList);
-                }
-            }
+        manageOffersButton.addActionListener(e -> {
+            JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+            setPanel(mainFrame, new ManageOffers(adminDataService).getMainPanel());
+            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         });
-        manageOffersButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
-                setPanel(mainFrame, new ManageOffers(adminDataService).getMainPanel());
-                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
-        });
-        mainPageButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
-                setPanel(mainFrame, new MainMenu(adminDataService).getMainPanel());
-                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
+        mainPageButton.addActionListener(e -> {
+            JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+            setPanel(mainFrame, new MainMenu(adminDataService).getMainPanel());
+            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         });
     }
 

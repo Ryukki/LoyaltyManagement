@@ -1,7 +1,5 @@
 package com.polsl.jakubwidlak.LoyaltyManagement.Controllers;
 
-import com.polsl.jakubwidlak.LoyaltyManagement.Entities.Rating;
-import com.polsl.jakubwidlak.LoyaltyManagement.Entities.Review;
 import com.polsl.jakubwidlak.LoyaltyManagement.Services.UserData;
 import com.polsl.jakubwidlak.LoyaltyManagement.Services.UserDataService;
 import com.polsl.jakubwidlak.LoyaltyManagement.View.AdminPanel;
@@ -12,19 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.swing.*;
-import java.util.Date;
-
-/**
- * Created by Ryukki on 06.12.2017.
- */
 @Controller
 public class UserViewController {
     @Autowired
     private UserDataService userDataService;
 
     @Autowired
-    AdminPanel adminPanel;
+    private AdminPanel adminPanel;
     private Long currentUserId;
 
     private Model putUserDataInModel(Model model){
@@ -33,18 +25,15 @@ public class UserViewController {
         return model;
     }
 
-    @RequestMapping(value = "/adminlogin", method = RequestMethod.GET)
+    @RequestMapping(value = "/adminlogin", method = RequestMethod.POST)
     public String loginDmin(@RequestParam String password){
-        if(password.equals("")){
-            //JFrame jFrame = new JFrame("Admin Panel");
-
-            //AdminPanel adminPanel = new AdminPanel(jFrame);
+        if(password.equals("1234")){
             adminPanel.setupAdminGui();
         }
         return "login";
     }
 
-    @RequestMapping(value = "/userview", method = RequestMethod.GET)
+    @RequestMapping(value = "/userview", method = RequestMethod.POST)
     public String userView(@RequestParam String user_mail, @RequestParam String password, Model model){
         Long user_id = userDataService.checkUserAndGetId(user_mail, password);
         String errorInfo;
@@ -58,7 +47,7 @@ public class UserViewController {
             errorInfo = "Wrong password";
         }
         model.addAttribute("errorInfo", errorInfo);
-        this.currentUserId = new Long(0);
+        this.currentUserId = 0L;
         return "login";
     }
 
@@ -69,7 +58,7 @@ public class UserViewController {
 
     @RequestMapping(value = "/loginPage", method = RequestMethod.GET)
     public String openLoginPage(){
-        this.currentUserId = new Long(0);
+        this.currentUserId = 0L;
         return "login";
     }
 
@@ -77,11 +66,10 @@ public class UserViewController {
     public String registerUser(@RequestParam String mail, @RequestParam String password, @RequestParam String name, @RequestParam String surname, @RequestParam String referralCode, Model model){
         if(userDataService.checkIfUserAlreadyExist(mail)){
             model.addAttribute("errorInfo", "User already exists");
-            this.currentUserId = new Long(0);
+            this.currentUserId = 0L;
             return "login";
         }
-        Long userId = userDataService.addNewUser(mail, password, name, surname, referralCode);
-        this.currentUserId = userId;
+        this.currentUserId = userDataService.addNewUser(mail, password, name, surname, referralCode);
         model = putUserDataInModel(model);
         return "userview";
     }
@@ -102,7 +90,6 @@ public class UserViewController {
 
     @RequestMapping(value = "/buy", method = RequestMethod.GET)
     public String addTransaction(@RequestParam Double price,@RequestParam Integer pointsSpent, Model model){
-        //co jeśli to nie będą double i integery
         if(pointsSpent==null)
             pointsSpent = 0;
         userDataService.addTransaction(this.currentUserId, pointsSpent, price);

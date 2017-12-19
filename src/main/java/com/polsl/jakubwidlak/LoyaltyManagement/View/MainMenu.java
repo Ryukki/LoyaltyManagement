@@ -2,25 +2,15 @@ package com.polsl.jakubwidlak.LoyaltyManagement.View;
 
 import com.polsl.jakubwidlak.LoyaltyManagement.Entities.LoyaltyLevel;
 import com.polsl.jakubwidlak.LoyaltyManagement.Entities.Offer;
-import com.polsl.jakubwidlak.LoyaltyManagement.Entities.User;
 import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
-import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
 
-/**
- * Created by Ryukki on 01.12.2017.
- */
 public class MainMenu {
     private JButton manageOffersButton;
     private JButton viewUsersButton;
@@ -123,61 +113,46 @@ public class MainMenu {
     }
 
     private void setupButtons(){
-        addNewLevelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame bonusJFrame = adminDataService.createBonusFrame("Add Level");
-                bonusJFrame.setContentPane(new EditAddLevel(adminDataService, mainMenu).getMainPanel());
-                bonusJFrame.pack();
-                bonusJFrame.revalidate();
-            }
+        addNewLevelButton.addActionListener(e -> {
+            JFrame bonusJFrame = adminDataService.createBonusFrame("Add Level");
+            bonusJFrame.setContentPane(new EditAddLevel(adminDataService, mainMenu).getMainPanel());
+            bonusJFrame.pack();
+            bonusJFrame.revalidate();
         });
 
-        changeConvertionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    Integer currency2points = Integer.parseInt(currency2pointsTextField.getText());
-                    adminDataService.setSystemSetting("Currency2Points", currency2points);
-                    Integer points2currency = Integer.parseInt(points2currencyTextField.getText());
-                    adminDataService.setSystemSetting("Points2Currency", points2currency);
-                }catch (NumberFormatException ex){
-                    JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                }
+        changeConvertionButton.addActionListener(e -> {
+            try{
+                Integer currency2points = Integer.parseInt(currency2pointsTextField.getText());
+                adminDataService.setSystemSetting("Currency2Points", currency2points);
+                Integer points2currency = Integer.parseInt(points2currencyTextField.getText());
+                adminDataService.setSystemSetting("Points2Currency", points2currency);
+            }catch (NumberFormatException ex){
+                JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        changePointsGivenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    Integer creatingAccountPoints = Integer.parseInt(pointsCreatingAccountTextField.getText());
-                    adminDataService.setSystemSetting("CreatingAccountPoints", creatingAccountPoints);
-                    Integer referringUserPoints = Integer.parseInt(pointsReferringTextField.getText());
-                    adminDataService.setSystemSetting("ReferralPoints", referringUserPoints);
-                    Integer ratingPoints = Integer.parseInt(pointsRatingTextField.getText());
-                    adminDataService.setSystemSetting("RatingPoints", ratingPoints);
-                    Integer reviewPoints = Integer.parseInt(pointsReviewingTextField.getText());
-                    adminDataService.setSystemSetting("ReviewPoints", reviewPoints);
-                }catch (NumberFormatException ex){
-                    JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                }
+        changePointsGivenButton.addActionListener(e -> {
+            try{
+                Integer creatingAccountPoints = Integer.parseInt(pointsCreatingAccountTextField.getText());
+                adminDataService.setSystemSetting("CreatingAccountPoints", creatingAccountPoints);
+                Integer referringUserPoints = Integer.parseInt(pointsReferringTextField.getText());
+                adminDataService.setSystemSetting("ReferralPoints", referringUserPoints);
+                Integer ratingPoints = Integer.parseInt(pointsRatingTextField.getText());
+                adminDataService.setSystemSetting("RatingPoints", ratingPoints);
+                Integer reviewPoints = Integer.parseInt(pointsReviewingTextField.getText());
+                adminDataService.setSystemSetting("ReviewPoints", reviewPoints);
+            }catch (NumberFormatException ex){
+                JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        manageOffersButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
-                setPanel(mainFrame, new ManageOffers(adminDataService).getMainPanel());
-                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
+        manageOffersButton.addActionListener(e -> {
+            JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+            setPanel(mainFrame, new ManageOffers(adminDataService).getMainPanel());
+            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         });
-        viewUsersButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
-                setPanel(mainFrame, new ViewUsers(adminDataService).getMainPanel());
-                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
+        viewUsersButton.addActionListener(e -> {
+            JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+            setPanel(mainFrame, new ViewUsers(adminDataService).getMainPanel());
+            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         });
     }
 

@@ -2,18 +2,12 @@ package com.polsl.jakubwidlak.LoyaltyManagement.View;
 
 import com.polsl.jakubwidlak.LoyaltyManagement.Entities.Offer;
 import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Properties;
+import java.sql.Date;
 
-/**
- * Created by Ryukki on 05.12.2017.
- */
+
 public class EditAddOffer {
     private JLabel actionLabel;
     private JButton saveButton;
@@ -22,28 +16,31 @@ public class EditAddOffer {
     private JPanel mainPanel;
     private JPanel startDatePanel;
     private JPanel endDatePanel;
-
-    //https://stackoverflow.com/questions/26794698/how-do-i-implement-jdatepicker
-    //wybieranie daty jdatepicker
+    private JXDatePicker startDatePicker;
+    private JXDatePicker endDatePicker;
 
     public EditAddOffer(AdminDataService adminDataService, Offer offer, ManageOffers manageOffers) {
         actionLabel.setText("Edit Offer");
-        UtilDateModel model = new UtilDateModel();
-        //model.setDate(20,04,2014);
-        // Need this...
-        Properties p = new Properties();
-        p.put("text.today", "Today");
-        p.put("text.month", "Month");
-        p.put("text.year", "Year");
-        JDatePanelImpl datePanel = new JDatePanelImpl(model);
-        JDatePickerImpl startDatePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-        startDatePanel.add(startDatePicker);
-        
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                manageOffers.refreshOffers();
+        offerNameTextField.setText(offer.getOfferName());
+        startDatePicker.setDate(offer.getOfferStartDate());
+        endDatePicker.setDate(offer.getOfferEndDate());
+        offerTextArea.setText(offer.getOfferText());
+        saveButton.addActionListener(e -> {
+            String offerName = offerNameTextField.getText();
+            if(!offerName.equals("")){
+                Date startDate = (Date) startDatePicker.getDate();
+                Date endDate = (Date) endDatePicker.getDate();
+                if(endDate.compareTo(startDate)>0){
+                    String offerText = offerTextArea.getText();
+                    adminDataService.editOffer(offer, offerName, startDate, endDate, offerText);
+                    manageOffers.refreshOffers();
+                    JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
+                    mainFrame.dispose();
+                }else {
+                    JOptionPane.showMessageDialog(new JFrame(), "End Date needs to be after Start Date.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }else {
+                JOptionPane.showMessageDialog(new JFrame(), "Offer Name is required.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -51,12 +48,22 @@ public class EditAddOffer {
     public EditAddOffer(AdminDataService adminDataService, ManageOffers manageOffers) {
         actionLabel.setText("Add Offer");
 
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-
-                manageOffers.refreshOffers();
+        saveButton.addActionListener(e -> {
+            String offerName = offerNameTextField.getText();
+            if(!offerName.equals("")){
+                Date startDate = (Date) startDatePicker.getDate();
+                Date endDate = (Date) endDatePicker.getDate();
+                if(endDate.compareTo(startDate)>0){
+                    String offerText = offerTextArea.getText();
+                    adminDataService.addOffer(offerName, startDate, endDate, offerText);
+                    manageOffers.refreshOffers();
+                    JFrame mainFrame = (JFrame)mainPanel.getTopLevelAncestor();
+                    mainFrame.dispose();
+                }else {
+                    JOptionPane.showMessageDialog(new JFrame(), "End Date needs to be after Start Date.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }else {
+                JOptionPane.showMessageDialog(new JFrame(), "Offer Name is required.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }

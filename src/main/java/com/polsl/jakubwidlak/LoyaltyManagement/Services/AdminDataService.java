@@ -1,7 +1,7 @@
 package com.polsl.jakubwidlak.LoyaltyManagement.Services;
 
-import com.polsl.jakubwidlak.LoyaltyManagement.Repositories.*;
 import com.polsl.jakubwidlak.LoyaltyManagement.Entities.*;
+import com.polsl.jakubwidlak.LoyaltyManagement.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,26 +15,18 @@ import java.util.stream.Collectors;
 public class AdminDataService {
 
     private UserRepository userRepository;
-    private RatingRepository ratingRepository;
-    private ReviewRepository reviewRepository;
-    private ReferralRepository referralRepository;
     private OfferUserConnectionRepository offerUserConnectionRepository;
     private OfferRepository offerRepository;
-    private TransactionRepository transactionRepository;
     private SystemSettingsRepository systemSettingsRepository;
     private LevelRepository levelRepository;
     private SendingRuleRepository sendingRuleRepository;
     private ActionEnumRepository actionEnumRepository;
 
     @Autowired
-    public AdminDataService(UserRepository userRepository, RatingRepository ratingRepository, ReviewRepository reviewRepository, ReferralRepository referralRepository, OfferUserConnectionRepository offerUserConnectionRepository, OfferRepository offerRepository, TransactionRepository transactionRepository, SystemSettingsRepository systemSettingsRepository, LevelRepository levelRepository, SendingRuleRepository sendingRuleRepository, ActionEnumRepository actionEnumRepository) {
+    public AdminDataService(UserRepository userRepository, OfferUserConnectionRepository offerUserConnectionRepository, OfferRepository offerRepository, SystemSettingsRepository systemSettingsRepository, LevelRepository levelRepository, SendingRuleRepository sendingRuleRepository, ActionEnumRepository actionEnumRepository) {
         this.userRepository = userRepository;
-        this.ratingRepository = ratingRepository;
-        this.reviewRepository = reviewRepository;
-        this.referralRepository = referralRepository;
         this.offerUserConnectionRepository = offerUserConnectionRepository;
         this.offerRepository = offerRepository;
-        this.transactionRepository = transactionRepository;
         this.systemSettingsRepository = systemSettingsRepository;
         this.levelRepository = levelRepository;
         this.sendingRuleRepository = sendingRuleRepository;
@@ -47,9 +39,21 @@ public class AdminDataService {
     public List<User> getUsers(){return userRepository.findAll();}
 
     public void sendOfferToLevel(String offerName, LoyaltyLevel loyaltyLevel){
-        Offer offer = offerRepository.findByOfferName(offerName);
         List<User> userList= userRepository.findAllByUserLevel(loyaltyLevel.getLevelName());
         sendOfferToUsers(offerName, userList);
+    }
+
+    public void editOffer(Offer offer, String name, java.sql.Date startDate, java.sql.Date endDate, String offerText) {
+        offer.setOfferName(name);
+        offer.setOfferStartDate(startDate);
+        offer.setOfferEndDate(endDate);
+        offer.setOfferText(offerText);
+        offerRepository.save(offer);
+    }
+
+    public void addOffer(String name, java.sql.Date startDate, java.sql.Date endDate, String offerText) {
+        Offer offer = new Offer();
+        editOffer(offer, name, startDate, endDate, offerText);
     }
 
     public void removeOffer(Long id){
@@ -97,8 +101,7 @@ public class AdminDataService {
     }
 
     public List<LoyaltyLevel> getLoyaltyLevels(){
-        List<LoyaltyLevel> levelList = levelRepository.findAllByOrderByLevelLowerBoundAsc();
-        return levelList;
+        return levelRepository.findAllByOrderByLevelLowerBoundAsc();
     }
 
     public LoyaltyLevel getLevelWithId(Long id){
@@ -131,7 +134,7 @@ public class AdminDataService {
     }
 
     private void removeInteriorLevels(Integer lowerBound, Integer upperBound){
-        List<LoyaltyLevel> levelsToRemove = levelRepository.findAllByLevelLowerBoundGreaterThanAndAndLevelUpperBoundLessThan(lowerBound, upperBound);
+        List<LoyaltyLevel> levelsToRemove = levelRepository.findAllByLevelLowerBoundGreaterThanEqualAndLevelUpperBoundLessThanEqual(lowerBound, upperBound);
         for (LoyaltyLevel level:levelsToRemove
              ) {
             levelRepository.deleteByLevelId(level.getLevelId());
@@ -149,7 +152,7 @@ public class AdminDataService {
     }*/
 
     public List<User> findUsersWithLevel(String level){
-        return userRepository.findAllByUserLevel(level);
+        return userRepository.findAllByUserLevelIgnoreCase(level);
     }
 
     public List<User> findUsersWithMails(List<String> mails){return userRepository.findByUserMailIn(mails);}

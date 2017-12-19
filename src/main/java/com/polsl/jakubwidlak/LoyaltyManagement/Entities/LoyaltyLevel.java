@@ -24,10 +24,6 @@ public class LoyaltyLevel {
         return levelId;
     }
 
-    public void setLevelId(Long levelId) {
-        this.levelId = levelId;
-    }
-
     public String getLevelName() {
         return levelName;
     }

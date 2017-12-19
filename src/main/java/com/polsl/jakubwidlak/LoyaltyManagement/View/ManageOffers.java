@@ -8,14 +8,9 @@ import com.polsl.jakubwidlak.LoyaltyManagement.Services.AdminDataService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
-/**
- * Created by Ryukki on 01.12.2017.
- */
 public class ManageOffers {
     private JButton mainPageButton;
     private JButton viewUsersButton;
@@ -158,80 +153,61 @@ public class ManageOffers {
     }
 
     private void setupButtons(){
-        mainPageButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
-                setPanel(mainFrame, new MainMenu(adminDataService).getMainPanel());
-                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
+        mainPageButton.addActionListener(e -> {
+            JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+            setPanel(mainFrame, new MainMenu(adminDataService).getMainPanel());
+            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         });
-        viewUsersButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
-                setPanel(mainFrame, new ViewUsers(adminDataService).getMainPanel());
-                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            }
+        viewUsersButton.addActionListener(e -> {
+            JFrame mainFrame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+            setPanel(mainFrame, new ViewUsers(adminDataService).getMainPanel());
+            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         });
-        addOfferButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame bonusJFrame = adminDataService.createBonusFrame("Edit Offer");
-                bonusJFrame.setContentPane(new EditAddOffer(adminDataService, manageOffers).getMainPanel());
-                bonusJFrame.pack();
-                bonusJFrame.revalidate();
-            }
+        addOfferButton.addActionListener(e -> {
+            JFrame bonusJFrame = adminDataService.createBonusFrame("Edit Offer");
+            bonusJFrame.setContentPane(new EditAddOffer(adminDataService, manageOffers).getMainPanel());
+            bonusJFrame.pack();
+            bonusJFrame.revalidate();
         });
-        addAccountCreationRuleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Offer offer = offerList.get(accountCreationOfferComboBox.getSelectedIndex());
-                adminDataService.addSendingRule(offer.getOfferId(), Long.valueOf(1), Long.valueOf(0), 0);
+        addAccountCreationRuleButton.addActionListener(e -> {
+            Offer offer = offerList.get(accountCreationOfferComboBox.getSelectedIndex());
+            adminDataService.addSendingRule(offer.getOfferId(), 1L, 0L, 0);
+            setupRulesTable();
+        });
+        addRefferalRuleButton.addActionListener(e -> {
+            Offer offer = offerList.get(refferalOfferComboBox.getSelectedIndex());
+            adminDataService.addSendingRule(offer.getOfferId(), 2L, 0L, 0);
+            setupRulesTable();
+        });
+        addLevelUpRuleButton.addActionListener(e -> {
+            Offer offer = offerList.get(achievedLevelOfferComboBox.getSelectedIndex());
+            LoyaltyLevel loyaltyLevel = levelList.get(achievedLevelComboBox.getSelectedIndex());
+            adminDataService.addSendingRule(offer.getOfferId(), 3L, loyaltyLevel.getLevelId(), 0);
+            setupRulesTable();
+        });
+        collectedPointsRuleButton.addActionListener(e -> {
+            Offer offer = offerList.get(collectedPointsOfferComboBox.getSelectedIndex());
+            Integer points = Integer.parseInt(collectedPointsTextField.getText());
+            if(points>0){
+                adminDataService.addSendingRule(offer.getOfferId(), 4L, 0L, points);
                 setupRulesTable();
+            }else {
+                JOptionPane.showMessageDialog(new JFrame(), "Value needs to be greater than 0.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
-        addRefferalRuleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Offer offer = offerList.get(refferalOfferComboBox.getSelectedIndex());
-                adminDataService.addSendingRule(offer.getOfferId(),Long.valueOf(2), Long.valueOf(0), 0);
-                setupRulesTable();
-            }
-        });
-        addLevelUpRuleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Offer offer = offerList.get(achievedLevelOfferComboBox.getSelectedIndex());
-                LoyaltyLevel loyaltyLevel = levelList.get(achievedLevelComboBox.getSelectedIndex());
-                adminDataService.addSendingRule(offer.getOfferId(), Long.valueOf(3), loyaltyLevel.getLevelId(), 0);
-                setupRulesTable();
-            }
-        });
-        collectedPointsRuleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Offer offer = offerList.get(collectedPointsOfferComboBox.getSelectedIndex());
-                Integer points = Integer.parseInt(collectedPointsTextField.getText());
-                adminDataService.addSendingRule(offer.getOfferId(), Long.valueOf(4), Long.valueOf(0), points);
-                setupRulesTable();
-            }
-        });
-        saveExpirationButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    Integer offerExpiration = Integer.parseInt(offerExpirationTextField.getText());
-                    if(offerExpiration>=0){
-                        adminDataService.setSystemSetting("OfferTimeStored", offerExpiration);
-                    }else{
-                        offerExpirationTextField.setText(adminDataService.getSystemSettingValue("OfferTimeStored").toString());
-                        JOptionPane.showMessageDialog(new JFrame(), "Value greater of equal zero required.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                    }
 
-                }catch (NumberFormatException ex){
-                    JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        });
+        saveExpirationButton.addActionListener(e -> {
+            try{
+                Integer offerExpiration = Integer.parseInt(offerExpirationTextField.getText());
+                if(offerExpiration>=0){
+                    adminDataService.setSystemSetting("OfferTimeStored", offerExpiration);
+                }else{
+                    offerExpirationTextField.setText(adminDataService.getSystemSettingValue("OfferTimeStored").toString());
+                    JOptionPane.showMessageDialog(new JFrame(), "Value greater of equal zero required.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
+
+            }catch (NumberFormatException ex){
+                JOptionPane.showMessageDialog(new JFrame(), "Integer value required.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }

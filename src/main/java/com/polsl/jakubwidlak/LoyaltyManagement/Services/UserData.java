@@ -4,9 +4,6 @@ import com.polsl.jakubwidlak.LoyaltyManagement.Entities.*;
 
 import java.util.List;
 
-/**
- * Created by Ryukki on 05.12.2017.
- */
 public class UserData {
     private User user;
     private List<Rating> ratingList;
