@@ -74,7 +74,6 @@ public class UserDataService {
 
     public Long addNewUser(String userMail, String password, String userName, String userSurname, String referralCode){
         User user = new User(userName, userSurname, userMail, password);
-        List<SystemSetting> systemSettingList = systemSettingsRepository.findAll();
         SystemSetting systemSetting = systemSettingsRepository.findBySystemSettingName("CreatingAccountPoints");
         Integer pointsForCreatingAccount = systemSetting.getSystemSettingValue();
         user.setUserCurrentPoints(pointsForCreatingAccount);
@@ -83,8 +82,11 @@ public class UserDataService {
         user = userRepository.save(user);
         sendAccountCreationOffers(user.getUserId());
         User referringUser = userRepository.findByUserReferralCode(referralCode);
+        if(referringUser==null){
+            referringUser = userRepository.findByUserMail(referralCode);
+        }
         if(referringUser!=null){
-            referringUser.changePoints(systemSettingsRepository.getOne(4).getSystemSettingValue());
+            referringUser.changePoints(systemSettingsRepository.findBySystemSettingName("ReferralPoints").getSystemSettingValue());
             userRepository.save(referringUser);
             sendReferralOffers(referringUser.getUserId());
         }
