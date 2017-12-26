@@ -61,7 +61,7 @@ public class UserDataService {
             if(user.checkPassword(password)){
                 return user.getUserId();
             }else{
-                return (long) -1;
+                return -1L;
             }
         }
         return 0L;
@@ -69,7 +69,7 @@ public class UserDataService {
 
     public boolean checkIfUserAlreadyExist(String userMail){
         User user = this.userRepository.findByUserMail(userMail);
-        return user != null;
+        return (user != null);
     }
 
     public Long addNewUser(String userMail, String password, String userName, String userSurname, String referralCode){

@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ViewUsers {
     private JButton mainPageButton;
@@ -123,9 +124,9 @@ public class ViewUsers {
         });
         searchButton.addActionListener(e -> {
             String searchTerm = userOrLevelSearchTextField.getText();
-            if(searchTerm!=""){
+            if(!searchTerm.equals("")){
                 List<User> userList;
-                userList = adminDataService.findUsersWithNameOrSurnameOrMailLike(searchTerm);
+                userList = adminDataService.findMatchingUsers(searchTerm);
                 userList.addAll(adminDataService.findUsersWithLevel(searchTerm));
                 putUsers(userList);
             }

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserViewController {
     @Autowired
     private UserDataService userDataService;
-
     @Autowired
     private AdminPanel adminPanel;
     private Long currentUserId;
@@ -62,7 +61,7 @@ public class UserViewController {
         return "login";
     }
 
-    @RequestMapping(value = "/registerUser", method = RequestMethod.GET)
+    @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
     public String registerUser(@RequestParam String mail, @RequestParam String password, @RequestParam String name, @RequestParam String surname, @RequestParam String referralCode, Model model){
         if(userDataService.checkIfUserAlreadyExist(mail)){
             model.addAttribute("errorInfo", "User already exists");

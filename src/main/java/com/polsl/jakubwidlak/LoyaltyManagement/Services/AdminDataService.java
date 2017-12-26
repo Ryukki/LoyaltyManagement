@@ -157,7 +157,7 @@ public class AdminDataService {
 
     public List<User> findUsersWithMails(List<String> mails){return userRepository.findByUserMailIn(mails);}
 
-    public List<User> findUsersWithNameOrSurnameOrMailLike(String name){
+    public List<User> findMatchingUsers(String name){
         List<User> userList = userRepository.findAllByUserNameContainingIgnoreCase(name);
         userList.addAll(userRepository.findAllByUserSurnameContainingIgnoreCase(name));
         userList.addAll(userRepository.findAllByUserMailContainingIgnoreCase(name));
